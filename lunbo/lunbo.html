@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .container {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            margin: 100px auto;
+            border: 1px solid #000;
+            overflow: hidden;
+        }
+        .photos {
+            position: absolute;
+            top: 0;
+            width: 1600px;
+            height: 300px;
+            transition: left 0.3s linear;
+        }
+        .photos img {
+            float: left;
+            width: 400px;
+            height: 300px;
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 30px;
+            color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            z-index: 1;
+        }
+        .arrow:hover {
+            cursor: pointer;
+            color: rgba(255, 255, 255, 1);
+            background-color: rgba(0, 0, 0, 1);
+        }
+        .btn-group {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            width: 120px;
+            height: 17px;
+        }
+        .btn {
+            display: block;
+            float: left;
+            width: 15px;
+            height: 15px;
+            margin: 0 5px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .btn-action {
+            display: block;
+            float: left;
+            width: 15px;
+            height: 15px;
+            margin: 0 5px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 100%;
+            background-color: rgba(255, 106, 0, 0.5);
+        }
+        .btn:hover {
+            cursor: pointer;
+        }
+        .btn-action:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" class="container">
+        <div id="photos" class="photos" style="left: 0px;">
+            <img src="1.jpg"/>
+            <img src="2.jpg"/>
+            <img src="3.jpg"/>
+            <img src="4.jpg"/>
+        </div>
+        <div id="left-arrow" class="arrow" style="left: 20px;" onclick="last()">
+            <span><</span>
+        </div>
+        <div id="right-arrow" class="arrow" style="left: 340px;" onclick="next()">
+            <span>></span>
+        </div>
+        <div id="btn-group" class="btn-group">
+            <span class="btn" id="btn-0"></span>
+            <span class="btn" id="btn-1"></span>
+            <span class="btn" id="btn-2"></span>
+            <span class="btn" id="btn-3"></span>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/less.js/3.0.2/less.js"></script>
+<script>
+    var photos = document.getElementById('photos');
+    var btnGroup = document.getElementById('btn-group');
+    var btn = document.querySelectorAll('.btn');
+    var actionIndex = 0;
+    btn[actionIndex].className = 'btn-action';
+    var play = setInterval(function() {
+        next();
+    }, 2000);
+
+
+    var next = () => {
+        var left = parseInt(photos.style.left);
+
+        if(left === -1200) {
+            photos.style.left = '0px';
+        }
+        else {
+            photos.style.left = `${left-400}px`;
+        }
+
+        btn[actionIndex++].className = 'btn';
+        if(actionIndex > 3) {
+            actionIndex = 0;
+        }
+        btn[actionIndex].className = 'btn-action';
+
+        clearInterval(play);
+        play = setInterval(function() {
+            next();
+        }, 2000);
+    }
+
+    var last = () => {
+        var left = parseInt(photos.style.left);
+
+        if(left === 0) {
+            photos.style.left = '-1200px';
+        }
+        else {
+            photos.style.left = `${left+400}px`;
+        }
+
+        btn[actionIndex--].className = 'btn';
+        if(actionIndex < 0) {
+            actionIndex = 3;
+        }
+        btn[actionIndex].className = 'btn-action';
+
+        clearInterval(play);
+        play = setInterval(function() {
+            next();
+        }, 2000);
+    }
+
+    btnGroup.onclick = function(e)  {
+        if(e.target.tagName.toLowerCase() == 'span') {
+
+            clearInterval(play);
+
+            btn[actionIndex].className = 'btn';
+            actionIndex = e.target.id.split('')[4];
+            btn[actionIndex].className = 'btn-action';
+
+            var left = `${actionIndex * (-400)}px`;
+            photos.style.left = left;
+
+            play = setInterval(function() {
+                next();
+            }, 2000);
+        }
+    }
+</script>
+</html>
